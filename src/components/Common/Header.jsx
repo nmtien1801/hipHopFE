@@ -88,8 +88,11 @@ export function Header({
 
   const handleOpen = (event, children) => {
     if (children && children.length > 0) {
-      setAnchorEl(event.currentTarget);
-      setMenuItems(children); // lưu children cho menu hiện tại
+      setAnchorEl(event.currentTarget); // cập nhật nút mới
+      setMenuItems(children);           // cập nhật menu con mới
+    } else {
+      setAnchorEl(null);               // nếu nút không có children thì đóng menu
+      setMenuItems([]);
     }
   };
 
@@ -192,7 +195,14 @@ export function Header({
             }}
           >
             {menuItems.map((child, idx) => (
-              <MenuItem key={idx} onClick={() => handleGoToEvent(child)}>
+              <MenuItem key={idx} onClick={() => handleGoToEvent(child)}
+                sx={{
+                  color: "black", // mặc định
+                  "&:hover": {
+                    color: "primary.main",
+                    backgroundColor: "transparent", // bỏ highlight xám mặc định
+                  }
+                }}>
                 {child.label}
               </MenuItem>
             ))}
