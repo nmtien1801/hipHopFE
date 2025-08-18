@@ -17,7 +17,7 @@ import {
 } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 export function Header({
   navList,
@@ -33,6 +33,7 @@ export function Header({
   goToHome,
   goToDashboard,
 }) {
+  const navigate = useNavigate()
   const [selected, setSelected] = React.useState('about')
   const { t } = useTranslation()
 
@@ -81,6 +82,26 @@ export function Header({
     }
   }
 
+  // dropdown event
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [menuItems, setMenuItems] = React.useState([]);
+
+  const handleOpen = (event, children) => {
+    if (children && children.length > 0) {
+      setAnchorEl(event.currentTarget);
+      setMenuItems(children); // lưu children cho menu hiện tại
+    }
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setMenuItems([]);
+  };
+
+  const handleGoToEvent = (child) => {
+    navigate(`/home/events/${child.path}`)
+  }
+
   return (
     <AppBar position="fixed" sx={{ bgcolor: 'black' }}>
       <Container maxWidth="xl">
@@ -127,8 +148,8 @@ export function Header({
                             ? 'primary.main'
                             : 'white'
                           : selected === item.path
-                          ? 'primary.main'
-                          : 'white',
+                            ? 'primary.main'
+                            : 'white',
 
                       '&:hover': {
                         color: 'primary.main',
@@ -152,12 +173,30 @@ export function Header({
                         }, 300)
                       }
                     }}
+                    onMouseEnter={(e) => handleOpen(e, item.children)}
                   >
                     {item.label}
                   </Button>
                 </Box>
               ))}
           </Stack>
+
+          {/* Menu xổ xuống */}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+            MenuListProps={{
+              onMouseEnter: () => { }, // giữ menu khi hover
+              onMouseLeave: handleClose,
+            }}
+          >
+            {menuItems.map((child, idx) => (
+              <MenuItem key={idx} onClick={() => handleGoToEvent(child)}>
+                {child.label}
+              </MenuItem>
+            ))}
+          </Menu>
 
           <Stack
             direction="row"

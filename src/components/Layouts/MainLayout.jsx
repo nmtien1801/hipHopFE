@@ -10,7 +10,7 @@ import { Box, Button, Toolbar } from '@mui/material'
 import { useAuth } from 'hooks/Auth/auth'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { globalActions } from 'store/slice/globalSlice'
 import { getToken } from 'utils/hash'
@@ -19,6 +19,7 @@ import { Header } from '../Common/Header'
 import { SideBar } from '../Common/SideBar'
 import LoginIcon from '@mui/icons-material/Login'
 import EditNoteIcon from '@mui/icons-material/EditNote'
+import { useEvents } from 'hooks/Events/useEvents'
 
 export function MainLayout({ children }) {
   const [open, setOpen] = React.useState(false)
@@ -38,6 +39,18 @@ export function MainLayout({ children }) {
     })
   }, [pathname])
 
+  // load động event
+  const lang =
+    useSelector((state) => state.global.language) ||
+    localStorage.getItem('language') ||
+    'vi-VN'
+
+  const { data: events, loading } = useEvents({
+    page: 1,
+    statusID: 1,
+    LanguagesID: lang,
+  });
+
   const navList = [
     {
       label: t('about'),
@@ -48,6 +61,10 @@ export function MainLayout({ children }) {
       label: t('events'),
       path: 'rules',
       icon: <RuleIcon />,
+      children: events?.map((ev) => ({
+        label: ev.EventName, // giả sử BE trả về field Title
+        path: `${ev.EventID}`, // path/id duy nhất
+      })),
     },
     {
       label: t('news'),
