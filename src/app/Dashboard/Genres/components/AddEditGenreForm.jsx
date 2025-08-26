@@ -28,9 +28,8 @@ import { useCriteriaList } from 'hooks/Criteria/useCriteriaList'
 
 const schema = yup.object().shape({
   GenresName: yup.string().required('Genre name is required'),
-  //   ImageBackground: yup.string().required('Image is required'),
-  //   ImageBanner: yup.string().required('Image is required'),
   ImagesPaths: yup.string().required('Image is required'),
+  ImageBanner: yup.string().required('Image is required'),
 })
 
 export function AddEditGenreForm({

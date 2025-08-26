@@ -19,7 +19,8 @@ const schema = yup.object().shape({
   EventName: yup.string().required('Event name is required'),
   TimeStart: yup.date().required('Start time is required'),
   TimeEnd: yup.date().required('End time is required'),
-  ImagesPaths: yup.mixed().nullable(),
+  ImagesPath: yup.mixed().nullable(),
+  ImagesBanner: yup.mixed().nullable(),
 })
 
 AddEditEventForm.propTypes = {
@@ -37,7 +38,8 @@ export function AddEditEventForm({ data, onSubmit, onLanguagechange, isEdit }) {
       StatusID: true,
       ShortDescription: '',
       Description: '',
-      ImagesPaths: '',
+      ImagesPath: '',
+      ImagesBanner: '',
 
       TimeStart: dayjs().startOf('day'),
       TimeEnd: dayjs().endOf('day'),
@@ -54,6 +56,7 @@ export function AddEditEventForm({ data, onSubmit, onLanguagechange, isEdit }) {
         TimeStart: dayjs(data?.TimeStart),
         TimeEnd: dayjs(data?.TimeEnd),
         StatusID: Boolean(data?.StatusID),
+        ImagesPath: data?.ImagesPaths ?? ''
       }
       Object.keys(newData).forEach((key) => {
         setValue(key, newData[key])
@@ -88,7 +91,7 @@ export function AddEditEventForm({ data, onSubmit, onLanguagechange, isEdit }) {
           <Typography variant="body2">
             {`${t('name')}, ${t('language')}, ${t('status')}, ${t(
               'ShortDescription',
-            )}, ${t('description')}, ${t('startTime')}, ${t('endTime')}. `}
+            )}, ${t('description')}, ${t('startTime')}, ${t('endTime')}, ${t('Card Image')}, ${t('Banner Image')}. `}
           </Typography>
         </Box>
 
@@ -124,9 +127,21 @@ export function AddEditEventForm({ data, onSubmit, onLanguagechange, isEdit }) {
             </Typography>
 
             <UploadField
-              name="ImagesPaths"
+              name="ImagesPath"
               control={control}
               aspectRatio="3/4"
+            />
+          </Box>
+
+          <Box sx={{ width: 1 / 3 }}>
+            <Typography variant="body2" gutterBottom>
+              {t('Banner Image')}
+            </Typography>
+
+            <UploadField
+              name="ImagesBanner"
+              control={control}
+              aspectRatio="16/9"
             />
           </Box>
 
